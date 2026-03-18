@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - Cantina da UEG</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+        body {
+            background-color: #fefefe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .cartao-admin {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        h1 { color: #333; margin-bottom: 20px; font-size: 24px; }
+        h2 { color: #555; margin-bottom: 20px; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+
+        #tela-login-admin { display: block; }
+        .input-senha { width: 100%; padding: 15px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; }
+
+        #tela-painel { display: none; }
+        .area-controle { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 20px; margin-bottom: 20px; text-align: left; }
+        .label-controle { font-weight: bold; color: #333; display: block; margin-bottom: 10px; }
+        .grupo-input { display: flex; gap: 10px; }
+        .input-tempo { flex-grow: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; }
+
+        .btn-azul { width: 100%; padding: 15px; background-color: #007bff; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-azul:hover { background-color: #0056b3; }
+        
+        .btn-verde { padding: 12px 20px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        
+        .btn-chamar { width: 100%; padding: 20px; background-color: #dc3545; color: white; border: none; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 6px rgba(220, 53, 69, 0.3); }
+        .btn-chamar:hover { background-color: #c82333; }
+        
+        .btn-voltar { margin-top: 20px; color: #6c757d; text-decoration: none; font-size: 14px; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <div class="cartao-admin">
+        <div id="tela-login-admin">
+            <h1>Acesso Restrito</h1>
+            <p style="color: #666; margin-bottom: 20px;">Insira a senha do administrador para gerenciar a Cantina da UEG.</p>
+            <input type="password" id="senha-admin" class="input-senha" placeholder="Digite a senha...">
+            <button class="btn-azul" onclick="verificarSenha()">Acessar Painel</button>
+            <br>
+            <a href="fila.html" class="btn-voltar">← Voltar para a loja</a>
+        </div>
+
+        <div id="tela-painel">
+            <h1>Painel de Administrador</h1>
+            <h2>Cantina da UEG</h2>
+
+            <div class="area-controle">
+                <label class="label-controle">Definir Tempo Médio (minutos):</label>
+                <div class="grupo-input">
+                    <input type="number" id="input-tempo" class="input-tempo" placeholder="Ex: 15" value="15">
+                    <button class="btn-verde" onclick="atualizarTempo()">Atualizar</button>
+                </div>
+                <p id="aviso-tempo" style="color: #28a745; font-size: 12px; margin-top: 8px; display: none;">Tempo atualizado com sucesso!</p>
+            </div>
+
+            <div class="area-controle" style="text-align: center;">
+                <label class="label-controle" style="text-align: left;">Controle da Fila:</label>
+                <p style="margin-bottom: 15px; color: #555;">Pessoas aguardando: <b id="contador-fila">0</b></p>
+                <button class="btn-chamar" onclick="chamarProximo()">🔔 Chamar Próximo</button>
+            </div>
+
+            <a href="fila.html" class="btn-voltar">Sair do Painel</a>
+        </div>
+    </div>
+
+    <script>
+        function verificarSenha() {
+            const senhaDigitada = document.getElementById('senha-admin').value;
+            if (senhaDigitada === 'ccmsai14') {
+                document.getElementById('tela-login-admin').style.display = 'none';
+                document.getElementById('tela-painel').style.display = 'block';
+            } else {
+                alert('Senha incorreta!');
+            }
+        }
+
+        async function atualizarTempo() {
+            const novoTempo = document.getElementById('input-tempo').value;
+            if(novoTempo === "" || novoTempo <= 0) { alert("Tempo inválido."); return; }
+            
+            await fetch('/api/tempo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tempo: parseInt(novoTempo) }) 
+            });
+            
+            const aviso = document.getElementById('aviso-tempo');
+            aviso.style.display = 'block';
+            setTimeout(() => { aviso.style.display = 'none'; }, 3000); 
+        }
+
+        async function chamarProximo() {
+            const resposta = await fetch('/api/chamar', { method: 'POST' });
+            const dados = await resposta.json();
+            
+            if (dados.mensagem === "Sucesso") {
+                alert(`✅ ${dados.chamado.nome} (ID: ${dados.chamado.id}) foi chamado para o balcão!`);
+            } else {
+                alert("A fila está vazia!");
+            }
+            buscarStatusAdmin();
+        }
+
+        async function buscarStatusAdmin() {
+            const resposta = await fetch('/api/status');
+            const dados = await resposta.json();
+            document.getElementById('contador-fila').innerText = dados.total_pessoas;
+        }
+
+        setInterval(buscarStatusAdmin, 2000);
+        buscarStatusAdmin();
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial - Fila Web</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+        body {
+            background-color: #fefefe;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #btn-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #007bff;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        #menu-info {
+            position: absolute;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            padding: 60px 20px 20px 20px;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        #menu-info.mostrar { right: 0; }
+
+        .texto-info { font-size: 16px; color: #333; line-height: 1.5; }
+        .texto-destaque { font-weight: bold; color: #007bff; }
+
+        .container-login {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .img-logo {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+
+        .btn-azul {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-azul:hover { background-color: #0056b3; }
+
+        .link-senha {
+            margin-top: 5px;
+            margin-bottom: 30px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .link-senha:hover { text-decoration: underline; }
+
+        .btn-pular {
+            width: 100%;
+            padding: 15px;
+            background-color: transparent;
+            color: #6c757d;
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-pular:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="btn-info" onclick="alternarMenu()">?</button>
+
+    <div id="menu-info">
+        <p class="texto-info">Trabalho de Empreendedorismo, professor Fred.<br>UEG, 2026.</p>
+        <hr style="border: 0; border-top: 1px solid #eee;">
+        <p class="texto-info">Programador: <br><span class="texto-destaque">Victor</span></p>
+    </div>
+
+    <div class="container-login">
+        <img src="logo.jpeg" class="img-logo" alt="Logo do Projeto Fila Web">
+
+        <button class="btn-azul" onclick="alert('Função de Login não implementada no momento.')">Logar</button>
+        <button class="btn-azul" onclick="alert('Função de Cadastro não implementada no momento.')">Cadastrar</button>
+        
+        <a class="link-senha" onclick="alert('Recuperação de senha desativada.')">Esqueceu sua senha?</a>
+
+        <button class="btn-pular" onclick="irParaFila()">Pular direto para a Fila</button>
+    </div>
+
+    <script>
+        function alternarMenu() {
+            const menu = document.getElementById('menu-info');
+            menu.classList.toggle('mostrar');
+        }
+
+        function irParaFila() {
+            window.location.href = "fila.html"; 
+        }
+    </script>
+</body>
+</html>

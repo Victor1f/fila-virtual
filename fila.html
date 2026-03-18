@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Filas - Fila Web</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+        body {
+            background-color: #fefefe;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #fefefe;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-redondo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #007bff;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-pequena { height: 50px; width: auto; }
+
+        .menu-deslizante {
+            position: fixed;
+            top: 0;
+            height: 100vh;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            transition: 0.3s ease;
+            padding: 80px 20px 20px 20px;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        #menu-esquerdo { left: -300px; width: 250px; }
+        #menu-esquerdo.mostrar { left: 0; }
+
+        #menu-direito { right: -300px; width: 280px; }
+        #menu-direito.mostrar { right: 0; }
+
+        .texto-info { font-size: 16px; color: #333; line-height: 1.5; }
+        .texto-destaque { font-weight: bold; color: #007bff; }
+        
+        .btn-admin {
+            padding: 15px;
+            background-color: #343a40;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        main {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .area-busca { display: flex; width: 100%; margin-bottom: 30px; gap: 10px; }
+        .input-busca { flex-grow: 1; padding: 12px 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; }
+        .btn-pesquisar { padding: 12px 20px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+
+        .cartao-loja { width: 100%; background-color: white; border: 1px solid #eee; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .logo-ueg { width: 100px; height: 100px; object-fit: contain; margin-bottom: 15px; }
+        .titulo-loja { font-size: 20px; color: #333; margin-bottom: 10px; }
+        .info-espera { font-size: 14px; color: #666; margin-bottom: 20px; }
+
+        .btn-azul { width: 100%; padding: 15px; background-color: #007bff; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
+
+        #status-fila { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #ccc; }
+        .posicao-box { background-color: #f8f9fa; border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <button class="btn-redondo" onclick="alternarMenuEsq()">☰</button>
+        <img src="logo.jpeg" class="logo-pequena" alt="Logo Fila Web">
+        <button class="btn-redondo" onclick="alternarMenuDir()">?</button>
+    </header>
+
+    <div id="menu-esquerdo" class="menu-deslizante">
+        <h2 class="texto-info">Menu</h2>
+        <hr style="border: 0; border-top: 1px solid #eee;">
+        <a href="admin.html" class="btn-admin">Administrador</a>
+    </div>
+
+    <div id="menu-direito" class="menu-deslizante">
+        <p class="texto-info">Trabalho de Empreendedorismo, professor Fred.<br>UEG, 2026.</p>
+        <hr style="border: 0; border-top: 1px solid #eee;">
+        <p class="texto-info">Programador: <br><span class="texto-destaque">Victor</span></p>
+    </div>
+
+    <main>
+        <div class="area-busca">
+            <input type="text" class="input-busca" placeholder="Pesquisar loja ou cantina...">
+            <button class="btn-pesquisar" onclick="alert('Pesquisa em desenvolvimento!')">Pesquisar</button>
+        </div>
+
+        <div class="cartao-loja">
+            <img src="logo-ueg.png" class="logo-ueg" alt="Logo da UEG">
+            <h2 class="titulo-loja">Fila da Cantina da UEG</h2>
+            <p class="info-espera">Tempo médio de espera: <b>15 min</b></p>
+            
+            <button id="btn-entrar" class="btn-azul" onclick="entrarNaFilaTeste()">Ingressar na Fila</button>
+
+            <div id="status-fila">
+                <p class="texto-info">Seu codinome: <span id="meu-nome" class="texto-destaque"></span></p>
+                <div class="posicao-box">
+                    <p class="texto-info">Sua posição na fila:</p>
+                    <span class="texto-destaque" style="color: #d9534f; font-size: 32px;"></span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function alternarMenuEsq() {
+            document.getElementById('menu-esquerdo').classList.toggle('mostrar');
+            document.getElementById('menu-direito').classList.remove('mostrar');
+        }
+
+        function alternarMenuDir() {
+            document.getElementById('menu-direito').classList.toggle('mostrar');
+            document.getElementById('menu-esquerdo').classList.remove('mostrar');
+        }
+
+        let meuId = null;
+
+        async function entrarNaFilaTeste() {
+            const resposta = await fetch('/api/entrar', { method: 'POST' });
+            const dados = await resposta.json();
+            
+            meuId = dados.id; 
+            
+            document.getElementById('btn-entrar').style.display = 'none';
+            document.getElementById('status-fila').style.display = 'block';
+            document.getElementById('meu-nome').innerText = dados.nome;
+            
+            buscarStatusFila(); 
+        }
+
+        async function buscarStatusFila() {
+            const resposta = await fetch('/api/status');
+            const dados = await resposta.json();
+            
+            document.querySelector('.info-espera b').innerText = dados.tempo_medio + " min";
+
+            if (meuId !== null) {
+                const index = dados.fila.findIndex(cliente => cliente.id === meuId);
+                
+                if (index !== -1) {
+                    document.querySelector('.posicao-box .texto-destaque').innerText = (index + 1) + "º";
+                } else {
+                    document.querySelector('.posicao-box .texto-destaque').innerText = "Sua vez de ser atendido!";
+                    document.querySelector('.posicao-box .texto-destaque').style.color = "#28a745";
+                }
+            }
+        }
+
+        setInterval(buscarStatusFila, 2000);
+        buscarStatusFila();
+    </script>
+</body>
+</html>
