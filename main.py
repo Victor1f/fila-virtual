@@ -33,9 +33,9 @@ def pagina_admin():
 def logo_principal():
     return FileResponse("logo.jpeg")
 
-@app.get("/logo-ueg.jpeg")
+@app.get("/logo-ueg.png")
 def logo_cantina():
-    return FileResponse("logo-ueg.jpeg")
+    return FileResponse("logo-ueg.png")
 
 # --- ROTAS DA API (COMUNICAÇÃO DE DADOS) ---
 @app.get("/api/status")
